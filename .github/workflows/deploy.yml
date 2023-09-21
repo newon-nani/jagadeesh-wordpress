@@ -22,7 +22,7 @@ jobs:
       
       - name: SSH into server and Copy Files
         run: |
-          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ./ ubuntu@${{ secrets.EC2_INSTANCE_IP }}:${{ secrets.APP_FOLDER }}
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ./ ubuntu@3.90.155.251:/var/lib/docker/volumes/wordpress_wordpress/_data/
 
       - name: SSH into server and Deploy
         run: |
