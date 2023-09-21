@@ -24,6 +24,7 @@ jobs:
         run: |
           scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ./wp-content/ ubuntu@3.90.155.251:/var/lib/docker/volumes/wordpress_wordpress/_data/
 
+
       - name: SSH into server and Deploy
         run: |
           ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_INSTANCE_IP }} 'cd /home/ubuntu && docker-compose -f wordpress/docker-compose.yml down && docker-compose -f wordpress/docker-compose.yml up -d'
