@@ -1,0 +1,30 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -t rsa ${{ secrets.EC2_INSTANCE_IP }} >> ~/.ssh/known_hosts
+      
+      - name: SSH into server and Copy Files
+        run: |
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r ./ ubuntu@${{ secrets.EC2_INSTANCE_IP }}:${{ secrets.APP_FOLDER }}
+
+      - name: SSH into server and Deploy
+        run: |
+          ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_INSTANCE_IP }} 'cd /home/ubuntu && docker-compose -f wordpress/docker-compose.yml down && docker-compose -f wordpress/docker-compose.yml up -d'
+
